@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Text, SafeAreaView, Button} from 'react-native';
+import {StyleSheet, View, Text, SafeAreaView, Button, Pressable} from 'react-native';
 import {useEffect, useState} from "react";
 
 export default function App() {
@@ -137,7 +137,7 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-        <Button title="New Game" onClick={() => {initBoard()}}></Button>
+        <Button title="New Game" onPress={() => { initBoard()}}></Button>
 
         <View style={styles.gameContainer}>
           {state.board.map((row, i) => (<Row key={i} row={row} play={play} />))}
@@ -151,7 +151,7 @@ export default function App() {
 
 function Row({ row, play }) {
   return (
-      <View>
+      <View style={styles.row}>
         {row.map((cell, i) => <Cell key={i} value={cell} columnIndex={i} play={play} />)}
       </View>
   )
@@ -166,52 +166,56 @@ const Cell = ({ value, columnIndex, play }) => {
   }
 
   return (
-      <View style={styles.cell} onClick={() => {play(columnIndex)}}>
+      <Pressable style={styles.cell} onPress={() => {play(columnIndex)}}>
         <View style={color}></View>
-      </View>
+      </Pressable>
   )
 }
 
 const styles = StyleSheet.create({
+  mb4:{
+    marginBottom: 20,
+  },
   row: {
     display: 'flex',
     flexDirection: "row",
     justifyContent: "center"
+  },
+  gameContainer: {
+    marginTop: 20,
+    display: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'column',
   },
   message: {
     textAlign: 'center',
     fontSize: 17
   },
   white: {
-    height: 20,
-    width: 20,
+    height: 30,
+    width: 30,
     backgroundColor: 'white',
     borderRadius: 100,
     transition: 'background-color 0.5s'
   },
   red: {
-    height: 20,
-    width: 20,
+    height: 30,
+    width: 30,
     backgroundColor: 'red',
     borderRadius: 100,
     transition: 'background-color 0.5s'
   },
   yellow: {
-    height: 20,
-    width: 20,
+    height: 30,
+    width: 30,
     backgroundColor: 'yellow',
     borderRadius: 100,
     transition: 'background-color 0.5s'
   },
-  gameContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column',
-  },
   cell: {
-    height: 30,
-    width: 30,
-    backgroundColor: '#1990ffm',
+    height: 40,
+    width: 40,
+    backgroundColor: '#1990ff',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
