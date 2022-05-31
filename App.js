@@ -3,15 +3,13 @@ import {StyleSheet, View, Text, SafeAreaView, Button, Pressable} from 'react-nat
 import {useEffect, useState} from "react";
 
 export default function App() {
-  const [state, setState] = useState({
-    player1: 1,
-    player2: 2,
-    currentPlayer: null,
-    board: [],
-    gameOver: false,
-    message: ''
-  })
-  
+  const player1 = 1
+  const player2 = 2
+  const [currentPlayer, setCurrentPlayer] = useState(null)
+  const [board, setBoard] = useState([])
+  const [gameOver, setGameOver] = useState(false)
+  const [message, setMessage] = useState('')
+
   function initBoard() {
     // Create a blank 6x7 matrix
     let board = [];
@@ -21,42 +19,46 @@ export default function App() {
       board.push(row);
     }
 
-    setState({
-      board,
-      currentPlayer: state.player1,
-      gameOver: false,
-      message: ''
-    })
+    setBoard(board)
+    setGameOver(false)
+    setCurrentPlayer(player1)
+    setMessage('')
   }
 
   function togglePlayer() {
-    return (state.currentPlayer === state.player1) ? state.player2 : state.player1;
+    return (currentPlayer === player1) ? player2 : player1
   }
 
   function play(c) {
-    if (!state.gameOver) {
+    if (!gameOver) {
       // Place piece on board
-      let board = state.board;
       for (let r = 5; r >= 0; r--) {
         if (!board[r][c]) {
-          board[r][c] = state.currentPlayer;
+          board[r][c] = currentPlayer;
           break;
         }
       }
 
       // Check status of board
       let result = checkAll(board);
-      if (result === state.player1) {
-        setState({ board, gameOver: true, message: 'Player 1 (red) wins!' });
-      } else if (result === state.player2) {
-        setState({ board, gameOver: true, message: 'Player 2 (yellow) wins!' });
+      if (result === player1) {
+        setBoard(board)
+        setGameOver(true)
+        setMessage('Player 1 (red) wins!')
+      } else if (result === player2) {
+        setBoard(board)
+        setGameOver(true)
+        setMessage('Player 2 (yellow) wins!')
       } else if (result === 'draw') {
-        setState({ board, gameOver: true, message: 'Draw game.' });
+        setBoard(board)
+        setGameOver(true)
+        setMessage('Draw!')
       } else {
-        setState({ board, currentPlayer: togglePlayer() });
+        setBoard(board)
+        setCurrentPlayer(togglePlayer())
       }
     } else {
-      setState({ message: 'Game over. Please start a new game.' });
+      setMessage('Game over, start again')
     }
   }
 
@@ -137,13 +139,13 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
-        <Button title="New Game" onPress={() => { initBoard()}}></Button>
+        <Button title="New Game" onPress={() => { initBoard() }}></Button>
 
         <View style={styles.gameContainer}>
-          {state.board.map((row, i) => (<Row key={i} row={row} play={play} />))}
+          {board.map((row, i) => (<Row key={i} row={row} play={ play } />))}
         </View>
 
-        <Text style={styles.message}>{state.message}</Text>
+        <Text style={styles.message}>{message}</Text>
         <StatusBar style="auto"></StatusBar>
     </SafeAreaView>
   )
@@ -157,7 +159,7 @@ function Row({ row, play }) {
   )
 }
 
-const Cell = ({ value, columnIndex, play }) => {
+function Cell({ value, columnIndex, play }) {
   let color = styles.white
   if (value === 1) {
     color = styles.red
